@@ -1,0 +1,41 @@
+<div class="container-respon">
+  <div class="header">
+    <mat-toolbar class="header-toolbar" >
+      <div class="logo-container">
+        <img src="/assets/logo_p6.png" alt="logo" class="logo" [routerLink]="['/']" />
+      </div>
+      <div class="spacer"></div>  
+    </mat-toolbar>
+  </div>
+
+  <button mat-icon-button class="arrow-button">
+    <mat-icon svgIcon="arrow_back" class="custom-icon" aria-hidden="false" aria-label="SVG icon arrow_back"  routerLink="/home"></mat-icon>
+  </button>
+</div>
+<div class="login-container">  
+    <h2 class="login-title">Se connecter</h2>
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="login()">
+      <p class="input-text">E-mail ou nom d'utilisateur</p>
+      <mat-form-field appearance="outline">
+       
+        <input matInput formControlName="email" placeholder="pat@example.com" required />
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">You must enter a value</mat-error>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Not a valid email</mat-error>
+      </mat-form-field>
+
+      <p class="input-text">Mot de passe</p>
+      <mat-form-field appearance="outline">
+           
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required />
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">You must enter a value</mat-error>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">Password must be at least 8 characters long</mat-error>
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit">Se connecter</button>
+    </form>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>
+  

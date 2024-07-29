@@ -1,0 +1,111 @@
+.login-container {
+    max-width: 300px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    text-align: center;
+  
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 20px;
+      mat-label {
+        font-weight: bold;
+      }
+    }
+    .input-text{
+      margin-bottom: 0px;
+      text-align: initial;
+
+    }
+    .mat-raised-button {
+      background-color: #7e57c2;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 16px;
+     
+      &:hover {
+        background-color: #6a45a1;
+      }
+    }
+  
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  }
+
+  .header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    height: 100px;
+    background-color: white;
+    border-bottom: solid 1px black;
+    margin-bottom: 20px;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }  
+  
+  .logo {
+
+    height: 81px;
+ }
+  
+  .spacer {
+    flex: 1 1 auto;
+  }
+  
+  .login-title, .mat-raised-button{
+  font-weight: 400;
+  font-size: 24px;
+  
+  }
+
+.login-title{
+  margin-bottom: 40px;
+}
+
+.custom-icon {
+  width: 48px;
+  height: 48px; 
+  color: black; 
+  font-weight: 100 !important;
+}
+
+.custom-icon .mat-icon svg {
+  width: inherit;
+  height: inherit;
+  font-weight: inherit;
+}
+
+.custom-icon .mat-icon svg path {
+  fill: currentColor; 
+}
+.arrow-button{
+  margin-left: 2%;
+}
+
+
+@media (max-width: 600px) {
+  .container-respon{
+   display: flex;
+   flex-direction: column-reverse;
+   justify-content: space-between;
+   width: 100%;
+  }
+ 
+  .header-toolbar {
+   border-bottom: none;
+   margin-bottom: 0px;
+ }
+ .header{
+   display: flex;
+   align-self: center;
+ }
+
+}

@@ -1,0 +1,32 @@
+<app-header></app-header> 
+
+<mat-card-content *ngIf="postForm">  
+    <button mat-icon-button class="arrow-button">
+      <mat-icon svgIcon="arrow_back" class="custom-icon" aria-hidden="false" aria-label="SVG icon arrow_back"  routerLink="/post"></mat-icon>
+    </button>
+  <form class="form-article" [formGroup]="postForm" (ngSubmit)="onSubmit()">
+    <mat-card-title>Créer un nouvel article</mat-card-title>
+    <mat-form-field>
+      <mat-label>Sélectionner un thème</mat-label>
+      <mat-select ngDefaultControl formControlName="themeId" class="input-tems-post">
+        <mat-option *ngFor="let theme of subjects$ | async" [value]="theme.id">
+          {{ theme.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Titre de l’article</mat-label>
+      <input matInput formControlName="title">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"  class="descrption-field"></textarea>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" class=" button-post-create">
+      Créer
+    </button>
+  </form>
+</mat-card-content>
+
+
+       

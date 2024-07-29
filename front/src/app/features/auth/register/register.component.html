@@ -1,0 +1,51 @@
+<div class="container-respon">
+    <div class="header">
+      <mat-toolbar class="header-toolbar" >
+        <div class="logo-container">
+          <img src="/assets/logo_p6.png" alt="logo" class="logo" [routerLink]="['/']" />
+        </div>
+        <div class="spacer"></div>  
+      </mat-toolbar>
+  </div>
+
+  <button mat-icon-button class="arrow-button">
+    <mat-icon svgIcon="arrow_back" class="custom-icon" aria-hidden="false" aria-label="SVG icon arrow_back"  routerLink="/home"></mat-icon>
+  </button>
+</div>
+<form [formGroup]="registerForm" (ngSubmit)="register()" class="register-container">
+
+  <h1 class="register-title">Inscription</h1>
+  <p class="input-text">Nom d'utilisateur</p>
+  <mat-form-field appearance="outline" class="example-full-width">
+    <input matInput formControlName="userName" required>
+    <mat-error *ngIf="userNameFormControl.hasError('required')">You must enter a value</mat-error>
+  </mat-form-field>
+
+  <p class="input-text">Adresse e-mail</p>
+    <mat-form-field class="example-full-width">
+      <input type="email" matInput formControlName="email" [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com">
+      <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+        Please enter a valid email address
+      </mat-error>
+      <mat-error *ngIf="emailFormControl.hasError('required')">
+        Email is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>  
+   
+    <p class="input-text">Mot de passe</p>
+
+    <mat-form-field appearance="outline" class="example-full-width">
+      <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password" required>
+      <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      <mat-error *ngIf="passwordFormControl.hasError('required')">You must enter a value</mat-error>
+      <mat-error *ngIf="passwordFormControl.hasError('minlength')">Password must be at least 8 characters long</mat-error>
+      <mat-error *ngIf="passwordFormControl.hasError('pattern')">Password must contain at least (0-9,a-z, A-Z, ! @ # $ % & *, etc) </mat-error>
+    </mat-form-field>
+  
+    <button mat-raised-button color="primary" type="submit" class="button-register">Register</button>
+  </form>
+
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  

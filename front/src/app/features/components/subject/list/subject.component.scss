@@ -1,0 +1,60 @@
+
+.mat-card-content{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+.mat-card{
+    width:40%;
+    height:auto ;
+    border-radius: 8px;
+    background: #F5F5F5;
+    margin: 16px!important;    
+}
+
+.mat-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+.mat-card-title {
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 40px;
+    font-weight: bold;
+    
+}
+
+.button-row  {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+button{
+    width: 30%;
+}
+
+
+@media (max-width: 600px) {
+    .custom-icon{
+      width: 32px;
+      height: 32px; 
+
+    }
+    .mat-card-content {
+        width: 100%;
+        flex-wrap: wrap;
+        margin-top: 40px;
+      
+        align-items: center;
+        
+    }
+    button {
+         width: 50%; 
+    }
+    .mat-card{
+        width: 80%;
+        margin-top: 40px;
+    }
+}

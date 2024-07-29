@@ -1,0 +1,15 @@
+<app-header></app-header>
+
+<mat-card-content class="cards-content">  
+    <mat-card class="card" *ngFor="let subject of subjects ">
+        <mat-card-title-group>
+            <mat-card-title class="subject-title">{{subject.title}}</mat-card-title>
+        </mat-card-title-group>
+        <mat-card-content>
+            {{subject.description}}
+        </mat-card-content>
+        <div class="button-row">
+            <button mat-raised-button color="primary" (click)="subscribe(subject.id)">S'abonner</button>
+        </div>
+    </mat-card>
+</mat-card-content>

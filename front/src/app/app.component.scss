@@ -1,0 +1,36 @@
+.mat-card-content{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    
+}
+
+.mat-card{
+    width: 40%;
+    border-radius: 8px;
+    background: #F5F5F5;
+
+}
+
+.mat-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+.mat-card-title {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 40px;
+    
+}
+
+.button-row  {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+button{
+    width: 30%;
+}
+
+

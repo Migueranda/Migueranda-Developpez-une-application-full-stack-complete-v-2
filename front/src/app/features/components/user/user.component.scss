@@ -1,0 +1,89 @@
+.profile-container{
+    display: flex;
+    flex-direction: column;
+}
+.user-form {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    margin: auto;
+}
+
+.button-user-save{
+    width: 150px;
+    align-self: center;
+}
+.button-user-logout{
+    align-self: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+.title-user-profile{
+    align-self: center;
+
+}
+.button-user-unsubscribe{
+    width: 30%;
+    align-self: center;
+}
+
+.container-user-subscriptions{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: auto;
+}
+
+.subscriptions > h4{
+    font-weight: bold;
+
+}
+.content-user-suncriptions{
+   padding: 20px;
+    background: #F5F5F5;
+   border-radius: 8px;
+   width: 40%;
+   display: flex;
+   flex-direction: column;
+   margin-bottom: 40px;
+
+}
+.title-user-subscription{
+    display: flex;
+    justify-content: center;
+    border-top: solid 1px black;
+    padding: 20px;
+    
+}
+.title-user-subscription> h3{
+    font-size: 24px;
+    font-weight: bold;
+}
+.button-user-unsubscribe{
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+.user-form {
+  
+    width: 80%; 
+    
+}
+
+.button-user-save, .button-user-logout{
+    width: 50%;
+    
+}
+
+.container-user-subscriptions {
+    flex-wrap: wrap;
+}
+
+.content-user-suncriptions {
+    width: 80%;
+}
+
+.button-user-unsubscribe{
+     width: 50%; 
+}
+}

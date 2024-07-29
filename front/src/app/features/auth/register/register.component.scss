@@ -1,0 +1,87 @@
+.register-container{
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    margin: auto;
+  }
+
+  .button-register{
+    width: 30%;
+    align-self: center;
+    
+  }
+
+  
+  .header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    height: 100px;
+    background-color: white;
+    border-bottom: solid 1px black;
+    margin-bottom: 20px;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }  
+  
+  .logo {
+
+    height: 81px;
+ }
+
+ .register-title{
+  align-self: center;
+ }
+
+ .custom-icon {
+  width: 48px;
+  height: 48px; 
+  color: black; 
+  font-weight: 100 !important;
+ 
+}
+
+.custom-icon .mat-icon svg {
+  width: inherit;
+  height: inherit;
+  font-weight: inherit;
+}
+
+.custom-icon .mat-icon svg path {
+  fill: currentColor; 
+}
+.arrow-button{
+  margin-left: 2%;
+}
+
+@media (max-width: 600px) {
+ .container-respon{
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  width: 100%;
+ }
+
+ .button-register{
+  width: 50%;
+  align-self: center;
+  margin-top: 30px;
+}
+  
+}
+ .register-container { 
+    width: 80%; 
+    margin: auto;
+  }
+
+ .header-toolbar {
+  border-bottom: none;
+  margin-bottom: 0px;
+}
+.header{
+  display: flex;
+  align-self: center;
+
+}
