@@ -54,7 +54,7 @@ export class AuthService {
         console.log('User registration successful:', response);
       }),
       catchError(error => {
-        console.error('User registration error:', error);
+        console.error('User registration error:', error); 
         return throwError(error.error || 'Server error');
       })
     );
@@ -99,5 +99,10 @@ export class AuthService {
    */
   getToken(): string | null {
     return this.token;
+  }
+
+  updateUser(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.userSubject.next(user);
   }
 }

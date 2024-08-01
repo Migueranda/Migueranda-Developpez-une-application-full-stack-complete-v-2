@@ -9,7 +9,8 @@ export interface Subject {
 export interface User {
   token:string;
   id: number;
-  username: string;
+  userName: string;
+  // username: string;
   email: string;
   password: string;
   subjects?: Subject[];

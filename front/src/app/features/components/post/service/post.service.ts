@@ -1,7 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { Post } from '../interface/post.model';
+import { AuthService } from 'src/app/features/auth/auth.service';
 /**
  * Service pour gérer les opérations CRUD des posts.
  * Fournit des méthodes pour créer, lire, mettre à jour et obtenir des posts par ID.
@@ -18,7 +19,7 @@ export class PostService {
    * 
    * @param {HttpClient} httpClient - Le service HttpClient pour effectuer des requêtes HTTP.
    */
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient,  private authService: AuthService, ) {}
 
 /**
    * Récupère tous les posts disponibles.
@@ -58,6 +59,22 @@ export class PostService {
    */
   updatePost(post: Post): Observable<Post> {
     return this.httpClient.put<Post>(`${this.pathService}/${post.id}`, post);
+  }
+
+
+
+  getPostsByUserSubject(userId: number, sortBy: string = 'date', order: string = 'desc'): Observable<Post[]> {
+    const token = this.authService.getToken(); 
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const params = new HttpParams()
+      .set('sortBy', sortBy)
+      .set('order', order);
+
+    return this.httpClient.get<Post[]>(`${this.pathService}/user/${userId}`, { headers, params });
   }
 
 }

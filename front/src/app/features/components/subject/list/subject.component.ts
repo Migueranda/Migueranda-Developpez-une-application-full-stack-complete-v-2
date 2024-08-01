@@ -43,7 +43,7 @@ export class SubjectComponent implements OnInit {
 
   /**
    * Charge tous les thèmes disponibles.
-   */
+  */
   loadSubjects(): void {
     this.subjectService.getSubjects().subscribe({
       next: (data) => {
@@ -57,6 +57,7 @@ export class SubjectComponent implements OnInit {
       }
     });
   }
+  
 
    /**
    * Abonne l'utilisateur connecté à un thème spécifique.
@@ -70,6 +71,7 @@ export class SubjectComponent implements OnInit {
           this.snackBar.open('Abonné avec succès', 'Fermer', {
             duration: 3000
           });
+          this.loadSubjects(); 
         },
         error: (error) => {
           console.error('Erreur lors de la souscription', error);

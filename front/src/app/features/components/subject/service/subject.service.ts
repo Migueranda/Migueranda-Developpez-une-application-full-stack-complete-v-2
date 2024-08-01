@@ -30,10 +30,15 @@ export class SubjectService{
      * @returns {Observable<Subject[]>} - Un observable contenant un tableau de thèmes.
      */
     getSubjects(): Observable<Subject[]> {
+        
         return this.httpClient.get<{subject: Subject[]}>(this.pathService).pipe(
             map(response => response.subject) 
         );
     }
+
+    getSubjectsForUser(userId: number): Observable<Subject[]> {
+        return this.httpClient.get<Subject[]>(`${this.pathService}/subjects/user/${userId}`);
+      }
 
     /**
      * Abonne un utilisateur à un thème spécifique.

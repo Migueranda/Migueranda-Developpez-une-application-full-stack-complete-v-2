@@ -46,21 +46,28 @@ export class PostComponent implements OnInit {
    * Charge tous les posts disponibles et les noms des utilisateurs associés.
    */
 
-  loadPosts(): void {
-    const order = this.sortAscending ? 'asc' : 'desc';
-    this.postService.getPosts('date', order).subscribe({
-      next: (posts) => {
-        this.posts = posts;
-        this.loadUserNames();
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des posts', error);
-      },
-      complete: () => {
-        console.log('Chargement des posts complet');
-      }
-    });
-  }
+loadPosts(): void {
+  this.userService.getCurrentUser().subscribe({
+    next: (user) => {
+      const order = this.sortAscending ? 'asc' : 'desc';
+      this.postService.getPostsByUserSubject(user.id, 'date', order).subscribe({
+        next: (posts) => {
+          this.posts = posts;
+          console.log('Posts loaded:', this.posts);  // Log the posts
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des posts', error);
+        },
+        complete: () => {
+          console.log('Chargement des posts complet');
+        }
+      });
+    },
+    error: (error) => {
+      console.error('Erreur lors de la récupération de l\'utilisateur courant', error);
+    }
+  });
+}
    /**
    * Charge les noms des utilisateurs associés aux posts.
    */

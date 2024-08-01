@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, throwError } from 'rxjs';
 import { User } from '../interface/user.model';
 import { AuthService } from 'src/app/features/auth/auth.service';
 
@@ -64,4 +64,9 @@ export class UserService {
     return !!this.authService.userValue;
   }
   
+  getCurrentUser(): Observable<User> {
+    return this.httpClient.get<User>(`${this.pathService}/currentUser`);
+}
+
+ 
 }
