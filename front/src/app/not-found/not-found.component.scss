@@ -1,0 +1,12 @@
+.error{
+    display: flex;
+    width: 100%;
+    // margin: auto;
+    justify-content: center;
+   
+}
+.error > h1{
+   margin-top: 250px;
+   font-size: 52px;
+   color: red;
+}

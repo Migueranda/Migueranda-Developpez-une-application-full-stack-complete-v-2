@@ -1,8 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Subject } from '../interface/subject.model';
+import { Component, Input, OnInit } from '@angular/core';
+// import { Subject, User } from '../interface/subject.model';
 import { SubjectService } from '../service/subject.service';
 import { AuthService } from 'src/app/features/auth/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from '../../user/interface/user.model';
+import { User } from '../../user/interface/user.model';
+import { Subscription } from 'rxjs';
+import { UserService } from '../../user/service/user.sevice';
 
 /**
  * Composant pour afficher et gérer les thèmes.
@@ -14,8 +18,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./subject.component.scss']
 })
 export class SubjectComponent implements OnInit {
-  subjects: Subject[] = [];
-  user: any;
+  subjects: Subject[] = [];  
+  user: User | null = null; 
+  private subscriptions: Subscription[] = [];
+  userSubs:  Subject[] =[];
 
   /**
    * Constructeur pour injecter les services nécessaires.
@@ -28,7 +34,8 @@ export class SubjectComponent implements OnInit {
   constructor(
     private subjectService: SubjectService,
     private authService: AuthService, 
-    private snackBar: MatSnackBar 
+    private snackBar: MatSnackBar,
+    private userService : UserService 
   ) { }
 
    /**
@@ -37,17 +44,35 @@ export class SubjectComponent implements OnInit {
    */
   ngOnInit(): void {
     this.user = this.authService.userValue;
-    this.loadSubjects();
-  }
+    if(this.user?.id){
+      this.userService.getUserById(this.user.id).subscribe(user => {
+        this.userSubs = user.subscription;
+        this.loadSubjects();
+      });
+    }
+  } 
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }  
 
   /**
    * Charge tous les thèmes disponibles.
   */
   loadSubjects(): void {
-    this.subjectService.getSubjects().subscribe({
+    const subjectsSubscription = this.subjectService.getSubjects().subscribe({
       next: (data) => {
         this.subjects = data;
+        // routine pour assigner l'attribut followed 
+        // en fonction de la présence du théme souscrit dans le tableau this.userSUbs
+        this.subjects.forEach(subject => {
+          const item = this.userSubs.find(userSub => userSub.id === subject.id);
+          if (item) {
+            subject.followed = true;
+          }else{
+            subject.followed = false;
+          }
+        });
       },
       error: (error) => {
         console.error('Erreur lors du chargement des thèmes', error);
@@ -56,8 +81,8 @@ export class SubjectComponent implements OnInit {
         console.log('Chargement des thèmes complet');
       }
     });
-  }
-  
+    this.subscriptions.push(subjectsSubscription);
+  }  
 
    /**
    * Abonne l'utilisateur connecté à un thème spécifique.
@@ -66,12 +91,12 @@ export class SubjectComponent implements OnInit {
    */
   subscribe(subjectId: number): void {
     if (this.user) {
-      this.subjectService.subscribeToSubject(this.user.id, subjectId).subscribe({
+      const subscribeSubscription = this.subjectService.subscribeToSubject(this.user.id, subjectId).subscribe({
         next: () => {
           this.snackBar.open('Abonné avec succès', 'Fermer', {
             duration: 3000
           });
-          this.loadSubjects(); 
+          this.updateSubjectFollowedStatus(subjectId, true);
         },
         error: (error) => {
           console.error('Erreur lors de la souscription', error);
@@ -80,6 +105,14 @@ export class SubjectComponent implements OnInit {
           });
         }
       });
+      this.subscriptions.push(subscribeSubscription);
     }
   }
+
+  updateSubjectFollowedStatus(subjectId: number, followed: boolean): void {
+    this.subjects = this.subjects.map(subject =>
+      subject.id === subjectId ? { ...subject, followed } : subject
+    );
+  }
+ 
 }

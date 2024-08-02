@@ -20,7 +20,6 @@ export class HeaderComponent implements OnInit {
 
   isMobile: boolean | undefined;
 
-
   /**
    * Constructeur pour injecter les services nécessaires et initialiser la variable `isMobile`.
    * 
@@ -33,8 +32,8 @@ export class HeaderComponent implements OnInit {
     onResize(event: any) {
       this.isMobile = event.target.innerWidth <= 600;
     }
-  ngOnInit(): void {
-    
-  }
+    ngOnInit(): void {
+      
+    }
   
 } 

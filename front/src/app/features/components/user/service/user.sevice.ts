@@ -13,7 +13,6 @@ import { AuthService } from 'src/app/features/auth/auth.service';
 })
 export class UserService {
 
-
   private pathService = '/api/user';
 
    /**
@@ -28,9 +27,9 @@ export class UserService {
    /**
    * Récupère les informations de l'utilisateur actuellement connecté.
    * 
-   * @returns {any} - Les informations de l'utilisateur actuellement connecté.
+   * @returns {User | null} - Les informations de l'utilisateur actuellement connecté.
    */
-  getUser(): any {
+  getUser():User | null{
     return this.authService.userValue;
   }
 
@@ -67,6 +66,5 @@ export class UserService {
   getCurrentUser(): Observable<User> {
     return this.httpClient.get<User>(`${this.pathService}/currentUser`);
 }
-
  
 }

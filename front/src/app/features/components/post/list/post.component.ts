@@ -3,7 +3,7 @@ import { Post } from '../interface/post.model';
 import { PostService } from '../service/post.service';
 import { Router } from '@angular/router';
 import { UserService } from '../../user/service/user.sevice';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -22,6 +22,7 @@ export class PostComponent implements OnInit {
   posts : Post[] =[];
   sorted: boolean = false;
   sortAscending: boolean = true;
+  private subscriptions: Subscription[] = [];
 
   /**
    * Constructeur pour injecter les services nécessaires.
@@ -42,32 +43,38 @@ export class PostComponent implements OnInit {
     this.loadPosts();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+  
    /**
    * Charge tous les posts disponibles et les noms des utilisateurs associés.
    */
+  loadPosts(): void {
+    const subjectsSubscription = this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        const subjectsSubscription =  this.postService.getPostsByUserSubject(user.id).subscribe({
+          next: (posts) => {
+            this.posts = posts;
+            console.log('Posts loaded:', this.posts);
+            this.sortPosts(); 
+          },
+          error: (error) => {
+            console.error('Erreur lors du chargement des posts', error);
+          },
+          complete: () => {
+            console.log('Chargement des posts complet');
+          }
+        });
+        this.subscriptions.push(subjectsSubscription);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la récupération de l\'utilisateur courant', error);
+      }
+    });
+    this.subscriptions.push(subjectsSubscription);    
+  }
 
-loadPosts(): void {
-  this.userService.getCurrentUser().subscribe({
-    next: (user) => {
-      const order = this.sortAscending ? 'asc' : 'desc';
-      this.postService.getPostsByUserSubject(user.id, 'date', order).subscribe({
-        next: (posts) => {
-          this.posts = posts;
-          console.log('Posts loaded:', this.posts);  // Log the posts
-        },
-        error: (error) => {
-          console.error('Erreur lors du chargement des posts', error);
-        },
-        complete: () => {
-          console.log('Chargement des posts complet');
-        }
-      });
-    },
-    error: (error) => {
-      console.error('Erreur lors de la récupération de l\'utilisateur courant', error);
-    }
-  });
-}
    /**
    * Charge les noms des utilisateurs associés aux posts.
    */
@@ -75,31 +82,28 @@ loadPosts(): void {
     const userIds = Array.from(new Set(this.posts.map(post => post.userId))); 
     const userRequests = userIds.map(id => this.userService.getUserById(id));
     
-    forkJoin(userRequests).subscribe(users => {
+    const subjectsSubscription = forkJoin(userRequests).subscribe(users => {
       users.forEach(user => {
         this.userNames[user.id] = user.userName;
       });
     });
+    this.subscriptions.push(subjectsSubscription);
   }
 
  /**
    * Bascule le tri des posts par date.
-   */
-
+  */
   toggleSortByDate(): void {
     this.sortAscending = !this.sortAscending;
     this.loadPosts(); 
   }
 
-   /**
-   * Trie les posts par date dans l'ordre spécifié.
-   */
   sortPosts(): void {
-    if (this.sortAscending) {
-      this.posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else {
-      this.posts.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    }
+    this.posts.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return this.sortAscending ? dateA - dateB : dateB - dateA;
+    });
   }
 
    /**

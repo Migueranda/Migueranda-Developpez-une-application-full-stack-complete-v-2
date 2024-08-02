@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
-import { User } from '../components/subject/interface/subject.model';
+// import { User } from '../components/subject/interface/subject.model';
 import { Router } from '@angular/router';
+import { User } from '../components/user/interface/user.model';
 
 /**
  * Service d'authentification pour gérer l'enregistrement, la connexion et la déconnexion des utilisateurs.

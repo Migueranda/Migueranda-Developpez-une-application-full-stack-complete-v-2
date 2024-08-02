@@ -1,5 +1,3 @@
-
-
 export interface Post {
     id: number;
     title: string;
@@ -14,12 +12,10 @@ export interface Post {
   export interface User {
     id: number;
     userName?: string;
-   
   }
   
   export interface Subject {
     id: number;
     title: string;
     
-  }
-  
+}

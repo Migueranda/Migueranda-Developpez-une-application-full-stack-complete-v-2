@@ -6,22 +6,20 @@ import { SubjectComponent } from './features/components/subject/list/subject.com
 import { PostComponent } from './features/components/post/list/post.component';
 import { AuthGuard } from './guards/auth.guards';
 import { UserComponent } from './features/components/user/user.component';
-
+import { NotFoundComponent } from './not-found/not-found.component';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
 
 const routes: Routes = [
-  { 
-    path: 'home', component: HomeComponent, 
-  },
-  {
-    path: 'subject', component : SubjectComponent, canActivate: [AuthGuard]
-  },
-  {
-    path: 'post', component : PostComponent, canActivate: [AuthGuard]
-  },
-  {
-    path: 'user', component : UserComponent, canActivate: [AuthGuard]
-  },
-  
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
+  { path: 'subject', component: SubjectComponent, canActivate: [AuthGuard] },
+  { path: 'post', component: PostComponent, canActivate: [AuthGuard] },
+  { path: 'user', component: UserComponent, canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent},
+  { path: '404', component: NotFoundComponent },
+  { path: '**', redirectTo: '404' }
 ];
 
 @NgModule({

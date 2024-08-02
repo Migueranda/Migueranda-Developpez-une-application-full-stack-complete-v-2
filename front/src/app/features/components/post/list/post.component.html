@@ -1,4 +1,4 @@
-<app-header></app-header>
+<!-- <app-header></app-header>
 <div class="container-post">   
     <div class="button-row">
       <button mat-raised-button class="button-create-article" color="primary" routerLink="/create">Créer un article</button>
@@ -20,4 +20,32 @@
       </mat-card>
     </mat-card-content>
 </div>
-  
+   -->
+
+
+   <app-header></app-header>
+<div class="container-post">   
+    <div class="button-row">
+        <button mat-raised-button class="button-create-article" color="primary" routerLink="/create">Créer un article</button>
+        <div (click)="toggleSortByDate()" class="trier-content">
+            <span class="trier-par">Trier par</span> 
+            <mat-icon>{{ sortAscending ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+        </div>
+    </div>
+    <mat-card-content class="cards-content">
+        <div *ngIf="posts.length === 0" class="no-posts-message">
+            <p >Vous n'avez pas d'articles. Abonnez-vous pour voir plus de contenu.</p>
+            <div  class="abonnez-vous" routerLink="/subject">Abonnez-vous</div>
+        </div>
+        <mat-card *ngFor="let post of posts" class="card" (click)="navigateToPost(post.id)">
+            <mat-card-title>{{ post.title }}</mat-card-title>
+            <div class="date-username">           
+                <mat-card-subtitle>{{ post.date }}</mat-card-subtitle>
+                <mat-card-subtitle>{{ userNames[post.userId] }}</mat-card-subtitle>
+            </div>
+            <mat-card-content>
+                {{ post.description }}
+            </mat-card-content>
+        </mat-card>
+    </mat-card-content>
+</div>

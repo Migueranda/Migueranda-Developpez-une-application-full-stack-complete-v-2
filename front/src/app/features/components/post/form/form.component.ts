@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Post } from '../interface/post.model';
 import { SubjectService } from '../../subject/service/subject.service';
 import { AuthService } from 'src/app/features/auth/auth.service';
+import { Subscription } from 'rxjs';
 
 /**
  * Composant pour le formulaire de création et de mise à jour des posts.
@@ -24,6 +25,7 @@ export class FormComponent implements OnInit {
   private postId: string | null = null;
   public onUpdate: boolean = false;
   private userId: number | null = null;
+  private subscriptions: Subscription[] = [];
 
 
 /**
@@ -67,6 +69,10 @@ export class FormComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
    /**
    * Initialise le formulaire avec les données du post s'il est fourni.
    * 
@@ -102,13 +108,14 @@ export class FormComponent implements OnInit {
       const post = this.postForm.value;
       const operation = this.postId ? this.postService.updatePost({ ...post, id: +this.postId }) : this.postService.createPost(post);
 
-      operation.subscribe({
+      const subjectsSubscription =   operation.subscribe({
         next: (result) => {
           this.matSnackBar.open('Post saved successfully!', 'Close', { duration: 3000 });
           this.router.navigate(['/post']);
         },
         error: () => this.matSnackBar.open('Failed to save the post', 'Close', { duration: 3000 })
       });
+      this.subscriptions.push(subjectsSubscription);
     }
   }
 }

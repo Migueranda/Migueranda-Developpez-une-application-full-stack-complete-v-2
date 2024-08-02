@@ -9,7 +9,7 @@ import { CommentService } from '../service/comment.service';
 import { UserService } from '../../user/service/user.sevice';
 import { Comment, CreateComment } from '../interface/comment.model';
 import { AuthService } from 'src/app/features/auth/auth.service'; 
-import { forkJoin, of } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { DatePipe } from '@angular/common';
 
@@ -35,6 +35,7 @@ export class DetailComponent implements OnInit {
   user: any;
   userMap = new Map<number, string>(); 
   private postId: number | undefined;
+  private subscriptions: Subscription[] = [];
 
   /**
    * Constructeur pour injecter les services nécessaires et initialiser le formulaire de commentaire.
@@ -95,15 +96,20 @@ export class DetailComponent implements OnInit {
     this.loadSubjects();
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
   /**
    * Charge tous les thèmes disponibles et les stocke dans une map.
    */
   loadSubjects(): void {
-    this.subjectService.getSubjects().subscribe(themes => {
+    const subjectsSubscription = this.subjectService.getSubjects().subscribe(themes => {
       themes.forEach(theme => {
         this.subjectMap.set(theme.id, theme.title);
       });
     });
+    this.subscriptions.push(subjectsSubscription);
   }
 
   /**
@@ -123,7 +129,7 @@ export class DetailComponent implements OnInit {
    */
 
 loadComments(postId: number): void {
-  this.commentService.getCommentsByPostId(postId).subscribe(comments => {
+  const subjectsSubscription = this.commentService.getCommentsByPostId(postId).subscribe(comments => {
       const userObservables = comments.map(comment => {
           //  pour récupérer le nom d'utilisateur pour chaque commentaire
           return this.userService.getUserById(comment.userId).pipe(
@@ -138,14 +144,16 @@ loadComments(postId: number): void {
         
       });
 
-      forkJoin(userObservables).subscribe(commentsWithUsers => {
+      const subjectsSubscription =  forkJoin(userObservables).subscribe(commentsWithUsers => {
           this.comments = commentsWithUsers.map(comment => ({
               ...comment,
               formattedDate: this.datePipe.transform(comment.date, 'short')
           }));
           console.log("Commentaires après traitement:", this.comments);
       });
+      this.subscriptions.push(subjectsSubscription);
   });
+  this.subscriptions.push(subjectsSubscription);
 }
 
  /**
@@ -160,7 +168,7 @@ onSubmit(): void {
           description: this.commentForm.value.description,
           date: new Date() 
       };
-      this.commentService.addComment(this.posts.id, commentData).subscribe({
+      const subjectsSubscription = this.commentService.addComment(this.posts.id, commentData).subscribe({
           next: (comment) => {
               this.matSnackBar.open('Commentaire ajouté avec succès', 'Fermer', { duration: 3000 });
               this.commentForm?.reset();
@@ -175,6 +183,7 @@ onSubmit(): void {
               this.matSnackBar.open('Échec de l\'ajout du commentaire', 'Fermer', { duration: 3000 });
           }
       });
+      this.subscriptions.push(subjectsSubscription);
   }
 }
 
@@ -184,13 +193,13 @@ onSubmit(): void {
    * @param userId - L'identifiant de l'utilisateur.
    * @returns Le nom de l'utilisateur ou 'Utilisateur inconnu' si l'utilisateur n'est pas trouvé.
    */
-getUsername(userId: number): string {
-  if (!userId) { // Vérification si userId est null ou undefined
-      console.log("Appel de getUsername avec userId indéfini.");
-      return 'Utilisateur inconnu';
+  getUsername(userId: number): string {
+    if (!userId) { // Vérification si userId est null ou undefined
+        console.log("Appel de getUsername avec userId indéfini.");
+        return 'Utilisateur inconnu';
+    }
+    const username = this.userMap.get(userId);
+    return username || 'Utilisateur inconnu';
   }
-  const username = this.userMap.get(userId);
-  return username || 'Utilisateur inconnu';
-}
 
 }

@@ -27,9 +27,9 @@ import { UserComponent } from './features/components/user/user.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { AuthService } from './features/auth/auth.service';
-import { LoginRoutingModule } from './features/auth/auth-routing.module';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthInterceptor } from './features/auth/AuthInterceptor';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 
 const materialModule = [
@@ -41,11 +41,11 @@ const materialModule = [
   MatSelectModule,
   BrowserAnimationsModule, 
   FormsModule, 
-  
+
 ]
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, SubjectComponent, HeaderComponent, PostComponent, FormComponent, DetailComponent, UserComponent, LoginComponent, RegisterComponent],
+  declarations: [AppComponent, HomeComponent, SubjectComponent, HeaderComponent, PostComponent, FormComponent, DetailComponent, UserComponent, LoginComponent, RegisterComponent, NotFoundComponent],
   imports: [
     BrowserModule,
     PostRoutingModule,
@@ -58,7 +58,6 @@ const materialModule = [
     MatFormFieldModule,
     MatInputModule,   
     MatSelectModule,
-    LoginRoutingModule,
     FlexLayoutModule,
     MatSidenavModule,
     MatButtonModule,
