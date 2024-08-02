@@ -5,44 +5,36 @@ import com.openclassrooms.mddapi.model.dtos.PostDto;
 
 import com.openclassrooms.mddapi.model.entities.PostEntity;
 import com.openclassrooms.mddapi.model.entities.Subject;
+import com.openclassrooms.mddapi.model.entities.Subscription;
 import com.openclassrooms.mddapi.model.entities.UserEntity;
 import com.openclassrooms.mddapi.repositories.PostRepository;
 import com.openclassrooms.mddapi.repositories.SubjectRepository;
+import com.openclassrooms.mddapi.repositories.SubscriptionRepository;
 import com.openclassrooms.mddapi.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 
 /**
  * Service fournissant des opérations de gestion des posts.
  * Gère la récupération, la création et la récupération par identifiant des posts.
  */
 
-@Data
 @Service
-public class PostService {
+@RequiredArgsConstructor
+public class PostService implements IPostService{
 
-    @Autowired
     private final PostRepository postRepository;
-
-    @Autowired
     private final SubjectRepository subjectRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final PostMapper postMapper;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PostMapper postMapper;
-
-
-    @Autowired
-    private UserRepository userRepository;
 
     /**
      * Récupère tous les posts de la base de données, triés par un champ spécifique.
@@ -63,15 +55,13 @@ public class PostService {
         }
 
         Sort sort = Sort.by(direction, sortBy);
-        Iterable<PostEntity> posts = postRepository.findAll(sort);
+        List<PostEntity> posts = postRepository.findAll(sort);
 
-        List<PostEntity> postEntities = StreamSupport.stream(posts.spliterator(), false)
-                .collect(Collectors.toList());
-
-        return postEntities.stream()
+        return posts.stream()
                 .map(postMapper::toDto)
                 .collect(Collectors.toList());
     }
+
     /**
      * Crée un nouveau post dans la base de données.
      *
@@ -80,19 +70,16 @@ public class PostService {
      * RuntimeException si le thème ou l'utilisateur associé au post n'est pas trouvé
      */
     public PostDto createPost(PostDto postDto) {
-        Optional<Subject> themeOptional = subjectRepository.findById(postDto.getThemeId());
-        if (!themeOptional.isPresent()) {
-            throw new RuntimeException("Theme not found");
-        }
 
-        Optional<UserEntity> userOptional = userRepository.findById(postDto.getUserId());
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
+        Subject theme = subjectRepository.findById(postDto.getThemeId())
+                .orElseThrow(() -> new RuntimeException("Theme not found"));
+
+        UserEntity user = userRepository.findById(postDto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         PostEntity postEntity = postMapper.toEntity(postDto);
-        postEntity.setTheme(themeOptional.get());
-        postEntity.setUser(userOptional.get());
+        postEntity.setTheme(theme);
+        postEntity.setUser(user);
         postEntity.setDate(new Timestamp(System.currentTimeMillis()));
 
         PostEntity savedPostEntity = postRepository.save(postEntity);
@@ -107,14 +94,25 @@ public class PostService {
      * @throws EntityNotFoundException si le post n'est pas trouvé
      */
     public PostDto getPostById(Long id) {
-        Optional<PostEntity> postEntityOptional = postRepository.findById(id);
-        if (!postEntityOptional.isPresent()) {
-            throw new EntityNotFoundException("Post not found with id " + id);
-        }
+        PostEntity postEntity = postRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with id " + id));
 
-        PostEntity postEntity = postEntityOptional.get();
         return postMapper.toDto(postEntity);
     }
 
-
+    /**
+     * Récupère tous les posts associés aux sujets auxquels un utilisateur est abonné.
+     *
+     * @param userId l'identifiant de l'utilisateur.
+     * @return une liste de PostEntity représentant les posts des sujets auxquels l'utilisateur est abonné.
+     * @throws RuntimeException si l'utilisateur n'est pas trouvé.
+     */
+    public List<PostEntity> getPostsForUser(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        List<Subscription> subscriptions = subscriptionRepository.findByUser(user);
+        List<Subject> subjects = subscriptions.stream()
+                .map(Subscription::getSubject)
+                .collect(Collectors.toList());
+        return postRepository.findByThemeIn(subjects);
+    }
 }

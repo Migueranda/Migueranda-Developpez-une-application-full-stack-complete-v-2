@@ -33,7 +33,7 @@ public class UserEntity {
     @Column(name = "PASSWORD")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "subscription",
             joinColumns = @JoinColumn(name = "user_id"),

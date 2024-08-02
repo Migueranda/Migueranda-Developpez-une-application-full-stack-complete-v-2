@@ -1,14 +1,14 @@
 package com.openclassrooms.mddapi.controllers;
 
 import com.openclassrooms.mddapi.model.dtos.PostDto;
-import com.openclassrooms.mddapi.services.PostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.openclassrooms.mddapi.model.entities.PostEntity;
+import com.openclassrooms.mddapi.services.IPostService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -16,9 +16,10 @@ import java.util.Map;
  * Fournit des points de terminaison pour créer, récupérer tous les posts et récupérer un post par identifiant.
  */
 @RestController
+@RequiredArgsConstructor
 public class PostController {
-    @Autowired
-    private PostService postService;
+
+    private final IPostService postService;
 
     /**
      * Récupère tous les posts, triés par un champ spécifique.
@@ -28,7 +29,6 @@ public class PostController {
      * @param order l'ordre de tri (ascendant ou descendant, par défaut "desc")
      * @return une Map contenant une liste de PostDto représentant tous les posts triés
      */
-
     @GetMapping("/post")
     public List<PostDto> getAllPost(
             PostDto postDto,
@@ -36,6 +36,7 @@ public class PostController {
             @RequestParam(defaultValue = "desc") String order) {
         return postService.getAllPost(postDto, sortBy, order);
     }
+
     /**
      * Crée un nouveau post.
      *
@@ -58,5 +59,16 @@ public class PostController {
     public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
         PostDto postDto = postService.getPostById(id);
         return ResponseEntity.ok(postDto);
+    }
+
+    /**
+     * Récupère tous les posts associés à un utilisateur spécifique.
+     *
+     * @param userId l'identifiant de l'utilisateur pour lequel récupérer les posts
+     * @return une liste de PostEntity représentant les posts de l'utilisateur spécifié
+     */
+    @GetMapping("/post/user/{userId}")
+    public List<PostEntity> getPostsForUser(@PathVariable Long userId) {
+        return postService.getPostsForUser(userId);
     }
 }

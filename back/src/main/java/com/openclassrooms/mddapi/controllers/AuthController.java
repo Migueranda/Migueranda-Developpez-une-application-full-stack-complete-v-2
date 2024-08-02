@@ -5,9 +5,8 @@ import com.openclassrooms.mddapi.configuration.UserAuthProvider;
 import com.openclassrooms.mddapi.model.dtos.CredentialsDto;
 import com.openclassrooms.mddapi.model.dtos.SignUpDto;
 import com.openclassrooms.mddapi.model.dtos.UserDto;
-import com.openclassrooms.mddapi.services.UserService;
+import com.openclassrooms.mddapi.services.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +24,8 @@ import java.net.URI;
 @CrossOrigin(origins = "http://localhost:4200")
 
 public class AuthController {
-    @Autowired
-    private  UserService userService;
+
+    private final IUserService userService;
 
     private final UserAuthProvider userAuthProvider;
 

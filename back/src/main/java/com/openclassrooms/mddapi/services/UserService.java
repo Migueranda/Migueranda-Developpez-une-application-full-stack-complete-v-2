@@ -11,8 +11,10 @@ import com.openclassrooms.mddapi.repositories.SubjectRepository;
 import com.openclassrooms.mddapi.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +29,12 @@ import java.util.Optional;
 
 @Data
 @Service
-public class UserService {
+@RequiredArgsConstructor
+public class UserService implements IUserService{
     private final UserRepository userRepository;
     private final SubjectRepository subjectRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserService(UserRepository userRepository, SubjectRepository subjectRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.subjectRepository = subjectRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     /**
      * Enregistrer un nouvel utilisateur dans la base de données.
@@ -94,6 +89,7 @@ public class UserService {
         return userMapper.toDto(userEntity, subjects);
     }
 
+
     /**
      * Met à jour les informations dans un utilisateur dans la base de données.
      *
@@ -115,6 +111,17 @@ public class UserService {
 
         UserEntity updatedUserEntity = userRepository.save(existingUserEntity);
         return userMapper.toDto(updatedUserEntity);
+    }
+
+    public UserDto getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+
+        UserDto userDto = (UserDto) authentication.getPrincipal();
+        return userDto;
     }
 }
 

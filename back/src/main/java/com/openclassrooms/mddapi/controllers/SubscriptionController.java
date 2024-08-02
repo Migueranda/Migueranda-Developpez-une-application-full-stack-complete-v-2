@@ -1,7 +1,8 @@
 package com.openclassrooms.mddapi.controllers;
 
-import com.openclassrooms.mddapi.services.SubscriptionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.openclassrooms.mddapi.services.ISubscriptionService;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 /**
@@ -10,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
+@RequiredArgsConstructor
 public class SubscriptionController {
 
-    @Autowired
-    private SubscriptionService subscriptionService;
+    private final ISubscriptionService subscriptionService;
 
     /**
      * Abonne un utilisateur à un thème spécifié.
@@ -21,7 +22,6 @@ public class SubscriptionController {
      * @param userId l'identifiant de l'utilisateur
      * @param subjectId l'identifiant du thème indiquant le succès de l'abonnement
      */
-
     @PostMapping("/subscriptions/{userId}/{subjectId}")
     public ResponseEntity<?> subscribe(@PathVariable Long userId, @PathVariable  Long subjectId) {
         subscriptionService.subscribeUserToSubject(userId, subjectId);

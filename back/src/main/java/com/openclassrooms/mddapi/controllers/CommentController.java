@@ -2,8 +2,8 @@ package com.openclassrooms.mddapi.controllers;
 
 
 import com.openclassrooms.mddapi.model.dtos.CommentDto;
-import com.openclassrooms.mddapi.services.CommentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.openclassrooms.mddapi.services.ICommentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +16,10 @@ import java.util.List;
  */
 
 @RestController
+@RequiredArgsConstructor
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
-
+    private final ICommentService commentService;
 
     /**
      * Ajoute un commentaire à un post spécifié.

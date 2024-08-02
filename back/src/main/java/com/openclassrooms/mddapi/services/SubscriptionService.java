@@ -8,7 +8,7 @@ import com.openclassrooms.mddapi.repositories.SubjectRepository;
 import com.openclassrooms.mddapi.repositories.SubscriptionRepository;
 import com.openclassrooms.mddapi.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +20,14 @@ import java.util.Optional;
  */
 
 @Service
-public class SubscriptionService {
+@RequiredArgsConstructor
+public class SubscriptionService implements ISubscriptionService{
 
-    @Autowired
-    private SubscriptionRepository subscriptionRepository;
+    private final SubscriptionRepository subscriptionRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private SubjectRepository subjectRepository;
+    private final SubjectRepository subjectRepository;
 
     /**
      * Abonne un utilisateur à un thème.

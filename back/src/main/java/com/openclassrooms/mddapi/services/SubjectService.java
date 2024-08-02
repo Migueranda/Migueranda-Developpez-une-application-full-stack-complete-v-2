@@ -3,13 +3,13 @@ package com.openclassrooms.mddapi.services;
 import com.openclassrooms.mddapi.mapper.SubjectMapper;
 import com.openclassrooms.mddapi.model.dtos.SubjectDto;
 import com.openclassrooms.mddapi.model.entities.Subject;
+import com.openclassrooms.mddapi.model.entities.UserEntity;
 import com.openclassrooms.mddapi.repositories.SubjectRepository;
 import com.openclassrooms.mddapi.repositories.UserRepository;
-import lombok.Data;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -18,26 +18,16 @@ import java.util.stream.StreamSupport;
  * Gère la récupération, la mise à jour des thèmes.
  */
 
-@Data
 @Service
-public class SubjectService {
-    @Autowired
-    private final SubjectRepository subjectRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private SubjectMapper subjectMapper;
+@RequiredArgsConstructor
+public class SubjectService implements ISubjectService {
 
-    /**
-     * Constructeur pour injecter les dépendances nécessaires.
-     *
-     * @param subjectRepository le dépôt pour les opérations de données des thèmes
-     * @param subjectMapper le mapper pour convertir entre les DTO et les modèles d'entités
-     */
-    public SubjectService(SubjectRepository subjectRepository, SubjectMapper subjectMapper) {
-        this.subjectRepository = subjectRepository;
-        this.subjectMapper = subjectMapper;
-    }
+    private final SubjectRepository subjectRepository;
+
+    private final UserRepository userRepository;
+
+    private final SubjectMapper subjectMapper;
+
 
     /**
      * Récupère tous les thèmes de la base de données.
@@ -50,8 +40,13 @@ public class SubjectService {
 
         List<Subject> result = StreamSupport.stream(subjects.spliterator(), false)
                 .collect(Collectors.toList());
-
+    
         return result;
+    }
+
+    public List<Subject> getSubjectsForUser(Long userId) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return new ArrayList<>(user.getSubjects());
     }
 
 }

@@ -8,7 +8,7 @@ import com.openclassrooms.mddapi.model.entities.UserEntity;
 import com.openclassrooms.mddapi.repositories.CommentRepository;
 import com.openclassrooms.mddapi.repositories.PostRepository;
 import com.openclassrooms.mddapi.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -21,18 +21,16 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class CommentService {
+@RequiredArgsConstructor
+public class CommentService implements ICommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private CommentMapper commentMapper;
-    @Autowired
-    private UserRepository userRepository;
+    private final CommentMapper commentMapper;
+
+    private final UserRepository userRepository;
 
     /**
      * Récupère tous les commentaires associés à un post spécifique.
@@ -51,7 +49,7 @@ public class CommentService {
      * @param entity l'entité CommentEntity à convertir
      * @return le CommentDto résultant de la conversion
      */
-    private CommentDto convertToDto(CommentEntity entity) {
+    public CommentDto convertToDto(CommentEntity entity) {
         UserEntity user = entity.getUser();
         String userName = user != null ? user.getUserName() : "Utilisateur inconnu";
 
@@ -82,12 +80,10 @@ public class CommentService {
         UserEntity user = userRepository.findById(commentDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + commentDto.getUserId()));
 
-
         CommentEntity commentEntity = commentMapper.toEntity(commentDto);
         commentEntity.setPost(post);
         commentEntity.setUser(user);
         commentEntity.setDate(new Date());
-
 
         CommentEntity savedComment = commentRepository.save(commentEntity);
 

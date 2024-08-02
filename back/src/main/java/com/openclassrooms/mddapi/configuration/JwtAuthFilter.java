@@ -30,25 +30,28 @@ public class JwtAuthFilter extends OncePerRequestFilter {
      * @throws ServletException si une erreur de servlet survient
      * @throws IOException si une erreur d'entrée/sortie survient
      */
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (header != null){
+        if (header != null) {
             String[] authElements = header.split(" ");
 
-            if (authElements.length == 2 && "Bearer".equals(authElements[0])){
+            if (authElements.length == 2 && "Bearer".equals(authElements[0])) {
                 try {
                     SecurityContextHolder.getContext().setAuthentication(userAuthProvider.validateToken(authElements[1]));
-                }catch (RuntimeException e){
+                } catch (RuntimeException e) {
                     SecurityContextHolder.clearContext();
-                    throw e;
+                    System.out.println("Unauthorized error: " + e.getMessage());
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                    return;
                 }
             }
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
